@@ -3,3 +3,44 @@
 ├── requirements.txt
 ├── main.py
 └── secrets.json
+
+import os
+import time
+import openai
+from tiktok_uploader import upload_video
+
+def generate_script():
+    prompt = """Create a 15-second street racing script with:
+    - Nissan GT-R drifting
+    - Female model in racing outfit
+    - Nighttime neon visuals
+    - Engine revving sound effects"""
+    
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return response.choices[0].message.content
+
+def generate_video(script):
+    # Use Pika Labs API (free tier) or Stable Diffusion
+    # Example for Pika Labs (pseudo-code):
+    video_url = requests.post(
+        "https://api.pika.art/video",
+        json={"prompt": script[:500], "duration": 15}
+    ).json()["url"]
+    return video_url
+
+def upload_to_tiktok(video_url, caption):
+    upload_video(
+        video_path=video_url,
+        description=caption,
+        cookies="cookies.txt"  # TikTok session cookies
+    )
+
+if __name__ == "__main__":
+    for _ in range(10):
+        script = generate_script()
+        video = generate_video(script)
+        upload_to_tiktok(video, f"{script[:150]}... #StreetRacing #CarGirls")
+        time.sleep(300)  # Avoid TikTok rate limits
