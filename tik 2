@@ -1,0 +1,5 @@
+/tiktok-bot
+├── .github/workflows/main.yml
+├── requirements.txt
+├── main.py
+└── secrets.json
